@@ -1,10 +1,8 @@
-"use strict";
 const express = require("express");
 const http = require("http");
 const io = require("socket.io");
 const cors = require("cors");
 
-const FETCH_INTERVAL = 5000;
 const PORT = process.env.PORT || 4000;
 
 const tickers = [
@@ -48,14 +46,17 @@ function getQuotes(socket) {
   socket.emit("ticker", quotes);
 }
 
-function trackTickers(socket) {
+function trackTickers(socket, fetchInterval = 5000) {
   // run the first time immediately
   getQuotes(socket);
-
   // every N seconds
   const timer = setInterval(function () {
     getQuotes(socket);
-  }, FETCH_INTERVAL);
+  }, fetchInterval);
+
+  socket.on("interval", function () {
+    clearInterval(timer);
+  });
 
   socket.on("disconnect", function () {
     clearInterval(timer);
@@ -77,8 +78,11 @@ app.get("/", function (req, res) {
 });
 
 socketServer.on("connection", (socket) => {
-  socket.on("start", () => {
-    trackTickers(socket);
+  socket.on("start", (fetchInterval) => {
+    trackTickers(socket, fetchInterval);
+  });
+  socket.on("interval", (fetchInterval) => {
+    trackTickers(socket, fetchInterval);
   });
 });
 

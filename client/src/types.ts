@@ -2,6 +2,7 @@ export type Ticker = {
   last_trade_time: string;
   ticker: keyof typeof ChosenTickers;
   price: string;
+  change: string;
 };
 
 export enum ChosenTickers {
@@ -14,9 +15,10 @@ export enum ChosenTickers {
 }
 
 export type TickerState = {
+  chosenTickers: Array<keyof typeof ChosenTickers>;
+  interval: number;
   isStarted: boolean;
   isConnected: boolean;
-  isLoading: boolean;
   isBarShown: boolean;
   fetchError: string;
   tickers: Ticker[];

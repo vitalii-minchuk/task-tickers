@@ -18,11 +18,19 @@ function Header() {
   return (
     <header>
       <Container maxW="6xl">
-        <Flex align="center" justify="space-between">
-          <Heading as="h1" fontSize={{ base: 'xl', sm: '3xl' }}>
+        <Flex
+          h={{ base: '50px', sm: '70px' }}
+          align="center"
+          justify="space-between"
+        >
+          <Heading
+            as="h1"
+            fontFamily="Orbitron"
+            fontSize={{ base: 'xl', sm: '3xl' }}
+          >
             task-tickers
           </Heading>
-          <Flex as="nav" gap="30px">
+          <Flex as="nav" gap={{ base: '10px', sm: '30px' }}>
             <NavLink to="">Home</NavLink>
             <NavLink to="settings">Settings</NavLink>
           </Flex>
