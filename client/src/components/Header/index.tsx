@@ -5,6 +5,7 @@ import {
   FormControl,
   Heading,
   Switch,
+  Text,
 } from '@chakra-ui/react';
 import { useAppDispatch } from '../../hooks';
 import { showTickersBar } from '../../store/Slices/tickersSlice';
@@ -35,7 +36,12 @@ function Header() {
             <NavLink to="settings">Settings</NavLink>
           </Flex>
           <Box>
-            <FormControl display="flex" alignItems="center">
+            <FormControl
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+            >
+              <Text>show bar</Text>
               <Switch
                 onChange={showTickersBarHandler}
                 size="sm"

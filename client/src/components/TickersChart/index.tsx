@@ -9,6 +9,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  ChartDataset,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { ChosenTickers, Ticker } from '../../types';
@@ -37,8 +38,6 @@ function TickersChart() {
   }, [tickers]);
 
   const getChartLabels = () => {
-    // const data = chartData?.map((el) => el.map((ticker) => ticker.price));
-    // const label = chartData?.map((el) => el.map((ticker) => ticker.ticker));
     const labels = chartData?.map((el) =>
       dayjs(el[0]?.last_trade_time).format('HH:mm:ss')
     );
@@ -46,25 +45,50 @@ function TickersChart() {
   };
 
   const getCartData = () => {
-    const result: any = [];
+    const result: ChartDataset<'line'>[] = [];
     const label = Object.values(ChosenTickers).filter((el) =>
       chosenTickers.includes(el)
     );
+
     const getPriceData = (ticker: string) => {
       const res: Array<number> = [];
       chartData.forEach((el) => {
         const obj = el.find((item) => item.ticker === ticker);
-        res.push(+obj?.price);
+        if (obj?.price) {
+          res.push(+obj.price);
+        }
       });
       return res;
     };
+
+    const getBGColor = (item: keyof typeof ChosenTickers) => {
+      switch (item) {
+        case ChosenTickers.AAPL:
+          return 'green';
+        case ChosenTickers.AMZN:
+          return 'blue';
+        case ChosenTickers.FB:
+          return 'orange';
+        case ChosenTickers.GOOGL:
+          return 'black';
+        case ChosenTickers.MSFT:
+          return 'red';
+        case ChosenTickers.TSLA:
+          return 'yellow';
+
+        default:
+          return 'gray';
+      }
+    };
+
     label.forEach((el) => {
       result.push({
         label: el,
         data: getPriceData(el),
+        borderColor: getBGColor(el),
       });
     });
-    console.log(result);
+
     return result;
   };
   return (

@@ -6,6 +6,7 @@ import {
   closeConnection,
   createConnection,
   getTickers,
+  getTickersFailure,
   getTickersSuccess,
 } from '../Slices/tickersSlice';
 import { Ticker } from '../../types';
@@ -36,8 +37,13 @@ export function* getTickersSaga() {
   yield socket.emit('start', interval);
   const chan: EventChannel<Ticker[]> = yield call(createChannel, socket);
   while (true) {
-    const value: Ticker[] = yield take(chan);
-    yield put(getTickersSuccess(value));
+    try {
+      const value: Ticker[] = yield take(chan);
+      yield put(getTickersSuccess(value));
+    } catch (error) {
+      yield put(getTickersFailure('something went wrong'));
+      chan.close();
+    }
   }
 }
 
